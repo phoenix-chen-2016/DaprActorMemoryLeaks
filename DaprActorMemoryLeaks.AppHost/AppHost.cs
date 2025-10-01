@@ -7,14 +7,21 @@ var daprOptions = new DaprSidecarOptions
 	AppId = "dapr-app",
 	DaprGrpcPort = 50001,
 	DaprHttpPort = 3500,
-	MetricsPort = 9090,
 	PlacementHostAddress = "localhost:50005",
 	SchedulerHostAddress = "localhost:50006",
+	EnableProfiling = false
 };
 
 builder.AddProject<Projects.Server>("Server")
 	.WithDaprSidecar(daprOptions);
 
-builder.AddProject<Projects.Client>("Client");
+builder.AddProject<Projects.Client>("Client")
+	.WithDaprSidecar(daprOptions with
+	{
+		AppId = "dapr-app",
+		PlacementHostAddress = "localhost:50005",
+		SchedulerHostAddress = "localhost:50006",
+		EnableProfiling = false
+	});
 
 builder.Build().Run();
